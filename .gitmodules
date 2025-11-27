@@ -1,0 +1,3 @@
+[submodule "modules/agile"]
+	path = modules/agile
+	url = https://github.com/noba-dkg-aion/symbioza-agile.git
