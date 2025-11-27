@@ -1,0 +1,9 @@
+[submodule "modules/agile"]
+	path = modules/agile
+	url = https://github.com/noba-dkg-aion/symbioza-agile.git
+[submodule "modules/planner-ai"]
+	path = modules/planner-ai
+	url = https://github.com/noba-dkg-aion/symbioza-planner-ai.git
+[submodule "modules/secrets"]
+	path = modules/secrets
+	url = https://github.com/noba-dkg-aion/symbioza-secrets.git
