@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  logger:
+    build:
+      context: .
+      dockerfile: docker/service.Dockerfile
+      args:
+        SERVICE_DIR: logger
+    command: uvicorn main:app --host 0.0.0.0 --port 8020
+    environment:
+      LOGS_PATH: /data/logs.jsonl
+    volumes:
+      - ./modules/logger/data:/data
+    ports:
+      - "8020:8020"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://localhost:8020/healthz')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  agile:
+    build:
+      context: .
+      dockerfile: docker/service.Dockerfile
+      args:
+        SERVICE_DIR: agile
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    environment:
+      LOGGER_URL: http://logger:8020
+    depends_on:
+      - logger
+    ports:
+      - "8000:8000"
+
+  planner:
+    build:
+      context: .
+      dockerfile: docker/service.Dockerfile
+      args:
+        SERVICE_DIR: planner-ai
+    command: uvicorn main:app --host 0.0.0.0 --port 8010
+    environment:
+      AGILE_URL: http://agile:8000
+      LOGGER_URL: http://logger:8020
+    depends_on:
+      - agile
+      - logger
+    ports:
+      - "8010:8010"
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: docker/service.Dockerfile
+      args:
+        SERVICE_DIR: dashboard
+    command: uvicorn main:app --host 0.0.0.0 --port 8030
+    environment:
+      AGILE_URL: http://agile:8000
+      PLANNER_URL: http://planner:8010
+      LOGGER_URL: http://logger:8020
+    depends_on:
+      - agile
+      - planner
+      - logger
+    ports:
+      - "8030:8030"

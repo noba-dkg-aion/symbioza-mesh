@@ -7,3 +7,6 @@
 [submodule "modules/secrets"]
 	path = modules/secrets
 	url = https://github.com/noba-dkg-aion/symbioza-secrets.git
+[submodule "secrets"]
+	path = secrets
+	url = git@github.com:noba-dkg-aion/symbioza-secrets.git
